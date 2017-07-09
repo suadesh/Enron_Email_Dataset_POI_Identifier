@@ -19,12 +19,9 @@ from sklearn.metrics import recall_score
 ### Task 1: Select what features you'll use.
 ### features_list is a list of strings, each of which is a feature name.
 ### The first feature must be "poi".
-features_list = ['poi','salary','to_messages','deferral_payments','total_payments',
-                 'exercised_stock_options','bonus','restricted_stock','shared_receipt_with_poi', 
-                 'restricted_stock_deferred','total_stock_value','expenses','loan_advances',
-                 'from_messages','other','from_this_person_to_poi','director_fees',
-                 'deferred_income','long_term_incentive','email_address', 
-                 'from_poi_to_this_person'] 
+features_list = ['poi','salary','exercised_stock_options','bonus',
+                 'total_stock_value', 'expenses','from_this_person_to_poi',
+                 'from_poi_to_this_person','other','restricted_stock']
                     # You will need to use more features
 
 ### Load the dictionary containing the dataset
@@ -86,6 +83,7 @@ matplotlib.pyplot.ylabel("exercised_stock_options")
 matplotlib.pyplot.show()
 
 
+    
 ### Task 4: Try a varity of classifiers
 ### Please name your classifier clf for easy export below.
 ### Note that if you want to do PCA or other multi-stage operations,
