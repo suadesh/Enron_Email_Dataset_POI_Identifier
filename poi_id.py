@@ -16,11 +16,26 @@ from tester import dump_classifier_and_data
 
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
-
+from sklearn import preprocessing
 ### Task 1: Select what features you'll use.
 ### features_list is a list of strings, each of which is a feature name.
 ### The first feature must be "poi".
 features_list = ['poi',
+                 'exercised_stock_options',
+                 'from_this_person_to_poi',
+                 'from_poi_to_this_person',
+                 'total_stock_value',
+                 'expenses',
+                 'deferred_income',
+                 'percent_to_poi',
+                 'salary']
+                 
+                    # You will need to use more features
+
+
+''' 
+With this configuaration 
+['poi',
                  #'exercised_stock_options',
                  'bonus',
                  'from_this_person_to_poi',
@@ -34,15 +49,33 @@ features_list = ['poi',
                  #'percent_from_poi',
                  'loan_advances',
                   'salary']
-                    # You will need to use more features
 
-
-''' 
-With this configuaration Score Mean:  0.952380952381
+Score Mean:  0.952380952381
 Accurancy: 0.97619047619
 Precision Score : 1.0
 Recall Score : 0.666666666667
 ''' 
+
+
+
+''' BEST SO FAR P 0.49 , R 0.34
+features_list = ['poi',
+                 'exercised_stock_options',
+                 'bonus',
+                 'from_this_person_to_poi',
+                 #'to_messages',
+                 #'from_messages',
+                 'from_poi_to_this_person',
+                 'total_stock_value',
+                 'expenses',
+                 #'other',
+                 #'percent_from_poi',
+                 'salary']
+                 #'percent_to_poi']
+
+
+                  '''
+
 
 
 ### Load the dictionary containing the dataset
@@ -96,6 +129,8 @@ for key, values in data_dict.items():
         percent_from_poi = valori[2]/(valori[3]+valori[2])
     values['percent_to_poi']= percent_to_poi
     values['percent_from_poi']= percent_from_poi
+
+
     
 ## AGGIUNTO DI QUESTI FEATURES RIDUCE L'ACCURATEZZA DEL 3 % 
 ## PERO OTTENGO UN RISULTATO DI 0.6 in SCORE 
@@ -109,6 +144,14 @@ my_dataset = data_dict
 ### Extract features and labels from dataset for local testing
 data = featureFormat(my_dataset, features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
+
+for k , v in my_dataset.items():
+    print 'exe' , v['exercised_stock_options']
+
+features
+    
+    
+
 '''
 i = 1 
 
@@ -141,11 +184,25 @@ matplotlib.pyplot.show()
 ### http://scikit-learn.org/stable/modules/pipeline.html
 
 # Provided to give you a starting point. Try a variety of classifiers.
-from sklearn.naive_bayes import GaussianNB
-clf = GaussianNB()
+# BEST ONE SO FAR e PIU VELOCE , ADABOOST SIMILI RISULTATI MA LENTO 
+#from sklearn.naive_bayes import GaussianNB 
+#clf = GaussianNB() 
 
 
-## SO FAR THE BEST ONE IS NAIVE BAYES 
+
+# RISULTATI BUONI MA LENTO 
+
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.model_selection import GridSearchCV
+#parameters = {'learning_rate':[0.7,0.8,0.9,1.0,1.1,1.2], 'n_estimators':[50,75,100,150,200]}
+clf = AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
+          learning_rate=0.9, n_estimators=100, random_state=None)
+#clf = GridSearchCV(adr, parameters)
+
+
+#clf = AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
+          #learning_rate=0.9, n_estimators=75, random_state=None)
+
 
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
 ### using our testing script. Check the tester.py script in the final project
@@ -172,7 +229,6 @@ print 'Accurancy:', clf.score(features_test,labels_test)
 print 'Precision Score :' , precision_score(labels_test,pred)
 print 'Recall Score :', recall_score(labels_test,pred)
 
-    
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
 ### that the version of poi_id.py that you submit can be run on its own and
