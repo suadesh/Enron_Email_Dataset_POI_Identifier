@@ -3,6 +3,7 @@
 import sys
 import pickle
 import matplotlib.pyplot
+import numpy as np
 
 sys.path.append("../tools/")
 sys.path.append(
@@ -19,10 +20,30 @@ from sklearn.metrics import recall_score
 ### Task 1: Select what features you'll use.
 ### features_list is a list of strings, each of which is a feature name.
 ### The first feature must be "poi".
-features_list = ['poi','salary','exercised_stock_options','bonus',
-                 'total_stock_value', 'expenses','from_this_person_to_poi',
-                 'from_poi_to_this_person','other','restricted_stock']
+features_list = ['poi',
+                 #'exercised_stock_options',
+                 'bonus',
+                 'from_this_person_to_poi',
+                 'to_messages',
+                 'from_messages',
+                 'from_poi_to_this_person',
+                 'total_stock_value',
+                 'expenses',
+                 #'other',
+                 #'percent_to_poi',
+                 #'percent_from_poi',
+                 'loan_advances',
+                  'salary']
                     # You will need to use more features
+
+
+''' 
+With this configuaration Score Mean:  0.952380952381
+Accurancy: 0.97619047619
+Precision Score : 1.0
+Recall Score : 0.666666666667
+''' 
+
 
 ### Load the dictionary containing the dataset
 with open(
@@ -40,6 +61,9 @@ print "the data set is composed of ", len(data_dict), " elemets"
 print data_dict['TOTAL']
 data_dict.pop('TOTAL')
 
+## 'from_this_person_to_poi','from_poi_to_this_person', 'to_messages', 'from_messages'
+
+
 
 ''' LISTA DI TUTTE LE FEATURES DISPONIBILI 
 'salary','to_messages','deferral_payments','total_payments',
@@ -52,24 +76,50 @@ data_dict.pop('TOTAL')
 
 ## BEST POI SALARY BONUS EXERCISED-STOCK TOTAL-STOCK EXPENSES FROM_THIS_PERSON FROM_POI_TO OTHER(FORSE)  
 
+
+for key, values in data_dict.items():
+    lista = [values['from_this_person_to_poi'],values['to_messages'],values['from_poi_to_this_person'],values['from_messages']]
+    valori = []
+    for k in lista:
+        if k == 'NaN':
+            k = 0
+            valori.append(k)
+        else:
+            valori.append(float(k))
+    if valori[0] == 0 and valori[1] == 0: 
+        pass
+    else:
+        percent_to_poi = valori[0]/(valori[1]+valori[0])
+    if valori[2] == 0 and valori[3] == 0 : 
+        pass
+    else:
+        percent_from_poi = valori[2]/(valori[3]+valori[2])
+    values['percent_to_poi']= percent_to_poi
+    values['percent_from_poi']= percent_from_poi
+    
+## AGGIUNTO DI QUESTI FEATURES RIDUCE L'ACCURATEZZA DEL 3 % 
+## PERO OTTENGO UN RISULTATO DI 0.6 in SCORE 
+
 ### Task 3: Create new feature(s)
 ### Store to my_dataset for easy export below.
 my_dataset = data_dict
 
+
+
 ### Extract features and labels from dataset for local testing
 data = featureFormat(my_dataset, features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
-
+'''
 i = 1 
 
-for i in range(7):
+for i in range(9):
     for point in data:
-        AA = point[i]
-        BB = point[i+1]
+        AA = point[0]
+        BB = point[i]
         matplotlib.pyplot.scatter( AA, BB )
 
-    matplotlib.pyplot.xlabel(features_list[i])
-    matplotlib.pyplot.ylabel(features_list[i+1])
+    matplotlib.pyplot.xlabel(features_list[0])
+    matplotlib.pyplot.ylabel(features_list[i])
     matplotlib.pyplot.show()
     i +=1 
 
@@ -83,7 +133,7 @@ matplotlib.pyplot.ylabel("exercised_stock_options")
 matplotlib.pyplot.show()
 
 
-    
+   ''' 
 ### Task 4: Try a varity of classifiers
 ### Please name your classifier clf for easy export below.
 ### Note that if you want to do PCA or other multi-stage operations,
@@ -93,6 +143,7 @@ matplotlib.pyplot.show()
 # Provided to give you a starting point. Try a variety of classifiers.
 from sklearn.naive_bayes import GaussianNB
 clf = GaussianNB()
+
 
 ## SO FAR THE BEST ONE IS NAIVE BAYES 
 
@@ -114,18 +165,12 @@ pred = clf.predict(features_test)
 
 from sklearn.model_selection import cross_val_score
 scores = cross_val_score(clf,features_test , labels_test)
-print scores.mean() 
+print 'Score Mean: ', scores.mean() 
 
-print clf.score(features_test,labels_test)
+print 'Accurancy:', clf.score(features_test,labels_test)
 
-
-print precision_score(labels_test,pred)
-print recall_score(labels_test,pred)
-
-o = 0 
-for i in pred: 
-    print i , labels_test[o]
-    o+=1
+print 'Precision Score :' , precision_score(labels_test,pred)
+print 'Recall Score :', recall_score(labels_test,pred)
 
     
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
