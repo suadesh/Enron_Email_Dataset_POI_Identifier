@@ -17,64 +17,25 @@ from tester import dump_classifier_and_data
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 from sklearn import preprocessing
+from sklearn.pipeline import Pipeline
+from sklearn.feature_selection import SelectKBest
+from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.naive_bayes import GaussianNB 
 ### Task 1: Select what features you'll use.
 ### features_list is a list of strings, each of which is a feature name.
 ### The first feature must be "poi".
 features_list = ['poi',
                  'exercised_stock_options',
-                 'from_this_person_to_poi',
-                 'from_poi_to_this_person',
                  'total_stock_value',
                  'expenses',
                  'deferred_income',
-                 'percent_to_poi',
-                 'salary']
+                 'salary',
+                 'from_this_person_to_poi',
+                 'from_poi_to_this_person',
+                 'percent_to_poi']
                  
                     # You will need to use more features
-
-
-''' 
-With this configuaration 
-['poi',
-                 #'exercised_stock_options',
-                 'bonus',
-                 'from_this_person_to_poi',
-                 'to_messages',
-                 'from_messages',
-                 'from_poi_to_this_person',
-                 'total_stock_value',
-                 'expenses',
-                 #'other',
-                 #'percent_to_poi',
-                 #'percent_from_poi',
-                 'loan_advances',
-                  'salary']
-
-Score Mean:  0.952380952381
-Accurancy: 0.97619047619
-Precision Score : 1.0
-Recall Score : 0.666666666667
-''' 
-
-
-
-''' BEST SO FAR P 0.49 , R 0.34
-features_list = ['poi',
-                 'exercised_stock_options',
-                 'bonus',
-                 'from_this_person_to_poi',
-                 #'to_messages',
-                 #'from_messages',
-                 'from_poi_to_this_person',
-                 'total_stock_value',
-                 'expenses',
-                 #'other',
-                 #'percent_from_poi',
-                 'salary']
-                 #'percent_to_poi']
-
-
-                  '''
 
 
 
@@ -94,13 +55,22 @@ print "the data set is composed of ", len(data_dict), " elemets"
 print data_dict['TOTAL']
 data_dict.pop('TOTAL')
 
-## 'from_this_person_to_poi','from_poi_to_this_person', 'to_messages', 'from_messages'
+
+# TOLGO IL PEGGIOR OUTLIERS MA E POI NON SONO PIU CERTO 
+#data_dict.pop('LAY KENNETH L')
+#data_dict.pop('HIRKO JOSEPH')
+#data_dict.pop('SKILLING JEFFREY K')
+#data_dict.pop('PAI LOU L')
 
 
 
 ''' LISTA DI TUTTE LE FEATURES DISPONIBILI 
-'salary','to_messages','deferral_payments','total_payments',
-'exercised_stock_options','bonus','restricted_stock','shared_receipt_with_poi', 
+'salary','to_messages','deferral_payments',
+'total_payments',
+'exercised_stock_options',
+'bonus',
+'restricted_stock',
+'shared_receipt_with_poi', 
 'restricted_stock_deferred','total_stock_value','expenses','loan_advances',
 'from_messages','other','from_this_person_to_poi','director_fees',
 'deferred_income',  'long_term_incentive', 'email_address', 
@@ -143,15 +113,29 @@ my_dataset = data_dict
 
 ### Extract features and labels from dataset for local testing
 data = featureFormat(my_dataset, features_list, sort_keys = True)
+
+'''
+
+b = data[:,4]
+min_max_scaler = preprocessing.MinMaxScaler()
+X_train_minmax = min_max_scaler.fit_transform(b)
+
+f = 4
+#g = 0      
+#for f in range(1,3):
+j = 0 
+for j in range(0,144):
+    data[j][f] = X_train_minmax[j]
+    j+=1
+ #f +=1 
+  #  g +=1 
+
+   NON HO GUADAGNATO CAMBIANDO I FEATURES 
+  
+  '''
 labels, features = targetFeatureSplit(data)
 
-for k , v in my_dataset.items():
-    print 'exe' , v['exercised_stock_options']
-
-features
-    
-    
-
+      
 '''
 i = 1 
 
@@ -185,23 +169,26 @@ matplotlib.pyplot.show()
 
 # Provided to give you a starting point. Try a variety of classifiers.
 # BEST ONE SO FAR e PIU VELOCE , ADABOOST SIMILI RISULTATI MA LENTO 
-#from sklearn.naive_bayes import GaussianNB 
+
 #clf = GaussianNB() 
 
 
 
 # RISULTATI BUONI MA LENTO 
 
-from sklearn.ensemble import AdaBoostClassifier
-from sklearn.model_selection import GridSearchCV
-#parameters = {'learning_rate':[0.7,0.8,0.9,1.0,1.1,1.2], 'n_estimators':[50,75,100,150,200]}
-clf = AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
+
+
+#parameters = {'learning_rate':[0.5,0.7,0.8,0.9,1.0,1.1,1.2], 'n_estimators':[50,75,100,150,200]}
+clf= AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
           learning_rate=0.9, n_estimators=100, random_state=None)
 #clf = GridSearchCV(adr, parameters)
 
 
-#clf = AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
-          #learning_rate=0.9, n_estimators=75, random_state=None)
+
+#clf=AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
+ #                      learning_rate=1.0, n_estimators=75, random_state=None)
+#from sklearn import tree
+#clf = tree.DecisionTreeClassifier(criterion ='gini',splitter='best')
 
 
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
@@ -217,6 +204,13 @@ from sklearn.cross_validation import train_test_split
 features_train, features_test, labels_train, labels_test = \
     train_test_split(features, labels, test_size=0.3, random_state=42)
 
+#scaler = preprocessing.MinMaxScaler()
+#skb = SelectKBest(k=6)
+#clf =  Pipeline(steps=[("SKB", skb),("Scaler",scaler) ,("Adaboost", ada)])
+
+#min_max_scaler = preprocessing.MinMaxScaler()
+#X_train_minmax = min_max_scaler.fit_transform(features_train)
+
 clf.fit(features_train, labels_train)
 pred = clf.predict(features_test)
 
@@ -228,6 +222,11 @@ print 'Accurancy:', clf.score(features_test,labels_test)
 
 print 'Precision Score :' , precision_score(labels_test,pred)
 print 'Recall Score :', recall_score(labels_test,pred)
+
+#clf.best_estimator_
+
+#rsult = clf.cv_results_
+#print "features importance :" , clf.feature_importances_
 
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
