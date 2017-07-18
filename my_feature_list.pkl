@@ -17,4 +17,6 @@ aS'from_poi_to_this_person'
 p8
 aS'percent_to_poi'
 p9
+aS'percent_from_poi'
+p10
 a.

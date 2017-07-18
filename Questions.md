@@ -16,6 +16,20 @@ There other outliers for some data, especially for stock values features, but in
 What features did you end up using in your POI identifier, and what selection process did you use to pick them? Did you have to do any scaling? Why or why not? As part of the assignment, you should attempt to engineer your own feature that does not come ready-made in the dataset -- explain what feature you tried to make, and the rationale behind it. (You do not necessarily have to use it in the final analysis, only engineer and test it.) In your feature selection step, if you used an algorithm like a decision tree, please also give the feature importances of the features that you use, and if you used an automated feature selection function like SelectKBest, please report the feature scores and reasons for your choice of parameter values.  [relevant rubric items: “create new features”, “intelligently select features”, “properly scale features”]
 
 
+For this project I used theses features :
+
++ exercised stock_options
++ total stock value
++ expenses
++ deferred income
++ salary
++ from this person to poi
++ from poi to this person
++ percent to poi
++ percent from poi
+
+I use different way to select them. First of all, I look at it in the spreadsheet, secondly I plot them , and them I chose some of them. I eventually modify the selection later when i chose which algorithm use. 
+I also try SelectKbest, in order to obtain a result  
 ####3
 What algorithm did you end up using? What other one(s) did you try? How did model performance differ between algorithms?  [relevant rubric item: “pick an algorithm”]
 

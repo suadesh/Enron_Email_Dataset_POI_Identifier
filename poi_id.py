@@ -33,11 +33,25 @@ features_list = ['poi',
                  'salary',
                  'from_this_person_to_poi',
                  'from_poi_to_this_person',
-                 'percent_to_poi']
+                 'percent_to_poi',
+                 'percent_from_poi']
                  
                     # You will need to use more features
 
 
+'''
+features_list = ['poi','salary','to_messages','deferral_payments',
+'total_payments',
+'exercised_stock_options',
+'bonus',
+'restricted_stock',
+'shared_receipt_with_poi', 
+'restricted_stock_deferred','total_stock_value','expenses','loan_advances',
+'from_messages','other','from_this_person_to_poi','director_fees',
+'deferred_income',  'long_term_incentive',  
+'from_poi_to_this_person','percent_to_poi','percent_from_poi']
+
+'''
 
 ### Load the dictionary containing the dataset
 with open(
@@ -157,7 +171,7 @@ for point in data:
 
 matplotlib.pyplot.xlabel("salary")
 matplotlib.pyplot.ylabel("exercised_stock_options")
-matplotlib.pyplot.show()
+cd matplotlib.pyplot.show()
 
 
    ''' 
@@ -169,12 +183,16 @@ matplotlib.pyplot.show()
 
 # Provided to give you a starting point. Try a variety of classifiers.
 # BEST ONE SO FAR e PIU VELOCE , ADABOOST SIMILI RISULTATI MA LENTO 
-
 #clf = GaussianNB() 
 
 
 
 # RISULTATI BUONI MA LENTO 
+
+
+
+
+
 
 
 
@@ -185,10 +203,23 @@ clf= AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
 
 
 
+
+
 #clf=AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
  #                      learning_rate=1.0, n_estimators=75, random_state=None)
 #from sklearn import tree
 #clf = tree.DecisionTreeClassifier(criterion ='gini',splitter='best')
+
+
+
+
+#from sklearn.neighbors import KNeighborsClassifier
+#clf = KNeighborsClassifier(n_neighbors=2)
+
+#from sklearn.ensemble import RandomForestClassifier
+#clf = RandomForestClassifier(n_estimators=10)
+
+
 
 
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
@@ -205,9 +236,10 @@ features_train, features_test, labels_train, labels_test = \
     train_test_split(features, labels, test_size=0.3, random_state=42)
 
 #scaler = preprocessing.MinMaxScaler()
-#skb = SelectKBest(k=6)
-#clf =  Pipeline(steps=[("SKB", skb),("Scaler",scaler) ,("Adaboost", ada)])
+#skb = SelectKBest(k=8).fit_transform(features_train, labels_train)
+#clf =  Pipeline(steps=[("SKB", skb),("Adaboost", ada)])
 
+#skb
 #min_max_scaler = preprocessing.MinMaxScaler()
 #X_train_minmax = min_max_scaler.fit_transform(features_train)
 
@@ -222,6 +254,15 @@ print 'Accurancy:', clf.score(features_test,labels_test)
 
 print 'Precision Score :' , precision_score(labels_test,pred)
 print 'Recall Score :', recall_score(labels_test,pred)
+
+
+importance =  clf.feature_importances_
+
+i = 1 
+for p in importance:
+    print features_list[i] , "importance : " ,  p 
+    i +=1 
+
 
 #clf.best_estimator_
 
