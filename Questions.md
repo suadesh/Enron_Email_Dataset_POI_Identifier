@@ -1,6 +1,6 @@
 # Questions 
 
-### Here a series of question about this project 
+
 
 
 ####1 
@@ -28,8 +28,10 @@ For this project I used theses features :
 + percent to poi
 + percent from poi
 
-I use different way to select them. First of all, I look at it in the spreadsheet, secondly I plot them , and them I chose some of them. I eventually modify the selection later when i chose which algorithm use. 
-I also try SelectKbest, in order to obtain a result  
+I use different way to select them. First of all, I look at it in the spreadsheet, secondly I plot them , and them I chose some of them. I eventually modify the selection later when I chose which algorithm use. 
+I also try SelectKbest, in order to obtain a result
+
+
 ####3
 What algorithm did you end up using? What other one(s) did you try? How did model performance differ between algorithms?  [relevant rubric item: “pick an algorithm”]
 
