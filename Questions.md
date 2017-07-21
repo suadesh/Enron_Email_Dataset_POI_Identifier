@@ -1,5 +1,4 @@
-# Questions 
-
+# Questions
 
 
 
@@ -11,6 +10,8 @@ The goal is to build a POI identifier, with machine learning ,capable of individ
 First of all this dataset contains one major outliers, and it was the line Total, the sum of all other line, that I just simply remove. 
 There other outliers for some data, especially for stock values features, but in order to do not lose to much information in a dataset of only 146 line, i will perform a scaling min and max of these features.  
 
+
+----------
 
 ####2 
 What features did you end up using in your POI identifier, and what selection process did you use to pick them? Did you have to do any scaling? Why or why not? As part of the assignment, you should attempt to engineer your own feature that does not come ready-made in the dataset -- explain what feature you tried to make, and the rationale behind it. (You do not necessarily have to use it in the final analysis, only engineer and test it.) In your feature selection step, if you used an algorithm like a decision tree, please also give the feature importances of the features that you use, and if you used an automated feature selection function like SelectKBest, please report the feature scores and reasons for your choice of parameter values.  [relevant rubric items: “create new features”, “intelligently select features”, “properly scale features”]
@@ -29,19 +30,48 @@ For this project I used theses features :
 + percent from poi
 
 I use different way to select them. First of all, I look at it in the spreadsheet, secondly I plot them , and them I chose some of them. I eventually modify the selection later when I chose which algorithm use. 
-I also try SelectKbest, in order to obtain a result
+I also try SelectKbest, in order to obtain a better result, but in the end I kept my choice. I also tried scaling only some features, using minmaxscaler, but I did not find benefit of using it. 
+Eventually I create 2 new features, that are the percent of email received from poi and sent to poi , over all the emails sent and received.  I found using these feature very important in the final choice. 
 
+VARAIBLE NAME | IMPORTANCE | FORMUL 
+---|---|---
+PERCENT TO POI| __0.7__ | from this person to poi)/[(from this person to poi)+(from message)]
+PERCENT FROM POI | __0.13__ |  (from poi to this person)/[(from poi to this person)+(from message)]
+
+
+
+------------
 
 ####3
 What algorithm did you end up using? What other one(s) did you try? How did model performance differ between algorithms?  [relevant rubric item: “pick an algorithm”]
 
+I chose to use Adaboost, that was the one that gave me the better result. I tried also DeciosionTree, NaiveBayes and  RandomForest. I had a good result with naive bayes, and trainig time lowest with it, but result with Adaboost were better in the end, and made me chose this one. 
 
+Here a small resume of the best one that i tried:
+ 
+Algorithm | Accuracy | Precision | Recall | F1 
+---|---|---|---|---
+Ada Boost | 0.88467 | 0.59221 | 0.43350 | 0.50 
+Naive Bayes | 0.87373 | 0.53576 | 0.39700 | 0.45606
+Decision Tree | 0.83493 | 0.38992 | 0.42150 | 0.40509
+Random Forest | 0.86373 | 0.46901 | 0.16650 | 0.24576 
+
+
+---------
 
 ####4 
 What does it mean to tune the parameters of an algorithm, and what can happen if you don’t do this well?  How did you tune the parameters of your particular algorithm? What parameters did you tune? (Some algorithms do not have parameters that you need to tune -- if this is the case for the one you picked, identify and briefly explain how you would have done it for the model that was not your final choice or a different model that does utilize parameter tuning, e.g. a decision tree classifier).  [relevant rubric items: “discuss parameter tuning”, “tune the algorithm”]
 
+
+----------
+
 ####5 
 What is validation, and what’s a classic mistake you can make if you do it wrong? How did you validate your analysis?  [relevant rubric items: “discuss validation”, “validation strategy”]
+
+
+
+
+------------
 
 ####6
 Give at least 2 evaluation metrics and your average performance for each of them.  Explain an interpretation of your metrics that says something human-understandable about your algorithm’s performance. [relevant rubric item: “usage of evaluation metrics”]
