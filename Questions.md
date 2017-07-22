@@ -33,9 +33,9 @@ I use different way to select them. First of all, I look at it in the spreadshee
 I also try SelectKbest, in order to obtain a better result, but in the end I kept my choice. I also tried scaling only some features, using minmaxscaler, but I did not find benefit of using it. 
 Eventually I create 2 new features, that are the percent of email received from poi and sent to poi , over all the emails sent and received.  I found using these feature very important in the final choice. 
 
-VARAIBLE NAME | IMPORTANCE | FORMUL 
+VARAIBLE NAME | IMPORTANCE | Equation 
 ---|---|---
-PERCENT TO POI| __0.7__ | from this person to poi)/[(from this person to poi)+(from message)]
+PERCENT TO POI| __0.7__ | (from this person to poi)/[(from this person to poi)+(from message)]
 PERCENT FROM POI | __0.13__ |  (from poi to this person)/[(from poi to this person)+(from message)]
 
 
@@ -63,11 +63,19 @@ Random Forest | 0.86373 | 0.46901 | 0.16650 | 0.24576
 What does it mean to tune the parameters of an algorithm, and what can happen if you don’t do this well?  How did you tune the parameters of your particular algorithm? What parameters did you tune? (Some algorithms do not have parameters that you need to tune -- if this is the case for the one you picked, identify and briefly explain how you would have done it for the model that was not your final choice or a different model that does utilize parameter tuning, e.g. a decision tree classifier).  [relevant rubric items: “discuss parameter tuning”, “tune the algorithm”]
 
 
+The most of the algorithm used in machine learning have specific parameters , that can help to adapt to the specific case. If the parameters are not well choses there are to risk, to do not fit the , with the algorithm the data , and on the other hand , to fit too much and overfitting. In the first case the result will be not very accurate, compromising the result. In the second case the risk is to fit so well the dataset, to draw a decision boundary too specific to data, that actually a simple one would gave a better result. 
+To start I used the default parameters, than I modify some parameters.  I used GridSearchCV to look for the best one through a matrix of choices.  At the end I modified only the learning rate setting it at 0.9 and the numbers of estimators at 100. 
+
+
+
 ----------
 
 ####5 
 What is validation, and what’s a classic mistake you can make if you do it wrong? How did you validate your analysis?  [relevant rubric items: “discuss validation”, “validation strategy”]
 
+To validate data we always split the dataset in two, in order to obtain a training set and a test set. First of all this will allow us to train our machine on the training set and than receive estimation of our performance on the test set, an independent dataset. Secondly it serves as verifying of overfitting.            
+After using cross validation that split our data set in two, or actually in 4, Features training and test, labels training and test. I train my algorithm with the trainings dataset, using the attribute __.fit__ of the classifier and than making prediction with the attribute __.prediction__.      
+I than compare the prediction obtained with the actual values, labels test, using the attribute __.score__ to estimate the accuracy, but also the function __recall score__ and __prediction score__. 
 
 
 
@@ -75,3 +83,29 @@ What is validation, and what’s a classic mistake you can make if you do it wro
 
 ####6
 Give at least 2 evaluation metrics and your average performance for each of them.  Explain an interpretation of your metrics that says something human-understandable about your algorithm’s performance. [relevant rubric item: “usage of evaluation metrics”]
+
+
+For this project I ended up using AdaBoost Algorithm , and this is the result that I had: 
+
+Algorithm | Accuracy | Precision Score | Recall Score 
+---|---|---|---
+Ada Boost | 0.88467 | 0.59221 | 0.43350 
+
+ 
+In order to define this __precision score__ and __recall score__ , it's important to explain some other values. The result of the algorithm is to assign a value of 0 for not POI or 1 for POI, so is a binary value.  
+
+__True positive__ is the number of correct predictions of 1 (pred =1 , effective = 1)                  
+__False positive__ is the number of wrong predictions of 1 (pred =1 , effective = 0)               
+__True negative__ is the number of the right prediction of 0 ( pred = 0 , effective = 0)       
+__False negative__: is the number of the wrong prediction on 0 ( pred = 0 , effective = 1) 
+ 
+Said so , precision score is the number of __true positive__ over the sum of __true positive__ and __false positive__.         
+Recall score on the other hand is the number of __true positive__ over the sum of __true positive__ and __false negative__.           
+
+
+As we can see precision is 0.59221, this values means the whenever a POI get flagged in my test set, I am quite confident that is really a poi. Besides a Recall score of 0.4335 means that my identifiers miss sometimes real POIs.
+
+__Accuracy__ is the sum of __true positive__ and __true negative__ , over the sum of all four of them(the total). 
+
+
+
