@@ -6,10 +6,10 @@ import matplotlib.pyplot
 import numpy as np
 
 sys.path.append("../tools/")
-sys.path.append(
-        "/Users/massi/Google_Drive/Perso/Data_Science/Udacity/ud120-projects-master/tools/")
-sys.path.append(
-        "/Users/massi/Google_Drive/Perso/Data_Science/Udacity/ud120-projects-master/Enron_Email_Dataset_investing/")
+#sys.path.append(
+#        "/Users/massi/Google_Drive/Perso/Data_Science/Udacity/ud120-projects-master/tools/")
+#sys.path.append(
+#        "/Users/massi/Google_Drive/Perso/Data_Science/Udacity/ud120-projects-master/Enron_Email_Dataset_investing/")
 
 from feature_format import featureFormat, targetFeatureSplit
 from tester import dump_classifier_and_data
@@ -47,13 +47,13 @@ with open(
     data_dict = pickle.load(data_file)
 
 ### Task 2: Remove outliers
-print "the data set is composed of ", len(data_dict), " elemets" 
+print "the data set is composed of ", len(data_dict), " elemets and I wil use 9 features" 
 
 '''
 In this way I will remove Total that is not a person but the total in the
 dataset of all the employees. 
 '''
-print data_dict['TOTAL']
+#print data_dict['TOTAL']
 data_dict.pop('TOTAL')
 
 

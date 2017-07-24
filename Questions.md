@@ -5,10 +5,10 @@
 ####1 
 Summarize for us the goal of this project and how machine learning is useful in trying to accomplish it. As part of your answer, give some background on the dataset and how it can be used to answer the project question. Were there any outliers in the data when you got it, and how did you handle those?  [relevant rubric items: “data exploration”, “outlier investigation”]
 
-This Dataset is composed of different informations of people working at Enron before the bankruptcy. We have multiple data about the salary and other kind of income of the most importants figures of Enron. Also, from the entire email database, we have other informations about the amount of email sent and received for, and to, each person. The dataset is composed of 146 persons, but not all of them were convicted, or supposed involved , in the facts that ruined Enron in less than a month, only 9 are present in this dataset.   
-The goal is to build a POI identifier, with machine learning ,capable of individuate this person of interest (poi), into other similar dataset. In order to achieve this , and have a great result, we need to analyse correctly this dataset, chose the proper features , and pick and tune the right algorithm. 
+This Dataset is composed of different informations of people working at __Enron__ before the bankruptcy. We have multiple data about the salary and other kind of income of the most importants figures of Enron. Also, from the entire email database, we have other informations about the amount of email sent and received for, and to, each person. The dataset is composed of 146 persons, but not all of them were convicted, or supposed involved , in the facts that ruined Enron in less than a month, only 9 are present in this dataset.   
+The goal is to build a POI identifier, with machine learning ,capable of individuate this person of interest (poi), for the data available.  In order to achieve this , and have a great result, we need to analyse correctly this dataset, chose the proper features , and pick and tune the right algorithm. 
 First of all this dataset contains one major outliers, and it was the line Total, the sum of all other line, that I just simply remove. 
-There other outliers for some data, especially for stock values features, but in order to do not lose to much information in a dataset of only 146 line, i will perform a scaling min and max of these features.  
+There are other outliers for some data, especially for stock values features, but in order to do not lose to many informations offered form this dataset of only 146 line , I will keep this outliers.   
 
 
 ----------
@@ -30,7 +30,7 @@ For this project I used theses features :
 + percent from poi
 
 I use different way to select them. First of all, I look at it in the spreadsheet, secondly I plot them , and them I chose some of them. I eventually modify the selection later when I chose which algorithm use. 
-I also try SelectKbest, in order to obtain a better result, but in the end I kept my choice. I also tried scaling only some features, using minmaxscaler, but I did not find benefit of using it. 
+I tried SelectKbest, in order to obtain a better result, but in the end I kept my choice. I also tried scaling only some features, using minmaxscaler, but I did not find benefit of using it. 
 Eventually I create 2 new features, that are the percent of email received from poi and sent to poi , over all the emails sent and received.  I found using these feature very important in the final choice. 
 
 VARAIBLE NAME | IMPORTANCE | Equation 
@@ -45,9 +45,9 @@ PERCENT FROM POI | __0.13__ |  (from poi to this person)/[(from poi to this pers
 ####3
 What algorithm did you end up using? What other one(s) did you try? How did model performance differ between algorithms?  [relevant rubric item: “pick an algorithm”]
 
-I chose to use Adaboost, that was the one that gave me the better result. I tried also DeciosionTree, NaiveBayes and  RandomForest. I had a good result with naive bayes, and trainig time lowest with it, but result with Adaboost were better in the end, and made me chose this one. 
+I chose to use AdaBoost, that was the one that gave me the better result. I tried also Deciosion Tree, Naive Bayes and  RandomForest. I had a good result with naive Bayes, and low training time but result with AdaBoost were better in the end, and made me chose this one. 
 
-Here a small resume of the best one that i tried:
+Here a small resume of the best one that I tried:
  
 Algorithm | Accuracy | Precision | Recall | F1 
 ---|---|---|---|---
@@ -75,7 +75,7 @@ What is validation, and what’s a classic mistake you can make if you do it wro
 
 To validate data we always split the dataset in two, in order to obtain a training set and a test set. First of all this will allow us to train our machine on the training set and than receive estimation of our performance on the test set, an independent dataset. Secondly it serves as verifying of overfitting.            
 After using cross validation that split our data set in two, or actually in 4, Features training and test, labels training and test. I train my algorithm with the trainings dataset, using the attribute __.fit__ of the classifier and than making prediction with the attribute __.prediction__.      
-I than compare the prediction obtained with the actual values, labels test, using the attribute __.score__ to estimate the accuracy, but also the function __recall score__ and __prediction score__. 
+I than compare the prediction obtained with the actual values, labels test, using the attribute __.score__ to estimate the accuracy, but also the functions __recall score__ and __prediction score__. 
 
 
 
@@ -89,23 +89,23 @@ For this project I ended up using AdaBoost Algorithm , and this is the result th
 
 Algorithm | Accuracy | Precision Score | Recall Score 
 ---|---|---|---
-Ada Boost | 0.88467 | 0.59221 | 0.43350 
+Ada Boost | __0.88467__ | __0.59221__ | __0.43350__ 
 
  
 In order to define this __precision score__ and __recall score__ , it's important to explain some other values. The result of the algorithm is to assign a value of 0 for not POI or 1 for POI, so is a binary value.  
 
-__True positive__ is the number of correct predictions of 1 (pred =1 , effective = 1)                  
-__False positive__ is the number of wrong predictions of 1 (pred =1 , effective = 0)               
-__True negative__ is the number of the right prediction of 0 ( pred = 0 , effective = 0)       
-__False negative__: is the number of the wrong prediction on 0 ( pred = 0 , effective = 1) 
+__True positive__ is the number of correct predictions of 1 (pred = 1 , eff = 1)                  
+__False positive__ is the number of wrong predictions of 1 (pred = 1 , eff = 0)               
+__True negative__ is the number of the right prediction of 0 ( pred = 0 , eff = 0)       
+__False negative__: is the number of the wrong prediction on 0 ( pred = 0 , eff = 1) 
  
-Said so , precision score is the number of __true positive__ over the sum of __true positive__ and __false positive__.         
-Recall score on the other hand is the number of __true positive__ over the sum of __true positive__ and __false negative__.           
+Said so , precision score is the number of __true positive__ divided by the sum of __true positive__ and __false positive__.         
+Recall score on the other hand is the number of __true positive__ divided by the sum of __true positive__ and __false negative__.           
 
 
 As we can see precision is 0.59221, this values means the whenever a POI get flagged in my test set, I am quite confident that is really a poi. Besides a Recall score of 0.4335 means that my identifiers miss sometimes real POIs.
 
-__Accuracy__ is the sum of __true positive__ and __true negative__ , over the sum of all four of them(the total). 
+__Accuracy__ is the sum of __true positive__ and __true negative__ , divided by the sum of all four of them(the total). 
 
 
 
