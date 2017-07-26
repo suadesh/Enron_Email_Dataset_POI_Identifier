@@ -90,20 +90,12 @@ For this project I ended up using AdaBoost Algorithm , and this is the result th
 Algorithm | Accuracy | Precision Score | Recall Score 
 ---|---|---|---
 Ada Boost | __0.88467__ | __0.59221__ | __0.43350__ 
+        
 
- 
-In order to define this __precision score__ and __recall score__ , it's important to explain some other values. The result of the algorithm is to assign a value of 0 for not POI or 1 for POI, so is a binary value.  
+Precision Score represents the capacity of the algorithm to do not label positive when is actually negative. When i have an higher score, like with this algorithm used, 0.59, I'm quite confident that the flagged one are actually poi and not no-poi. 
 
-__True positive__ is the number of correct predictions of 1 (pred = 1 , eff = 1)                  
-__False positive__ is the number of wrong predictions of 1 (pred = 1 , eff = 0)               
-__True negative__ is the number of the right prediction of 0 ( pred = 0 , eff = 0)       
-__False negative__: is the number of the wrong prediction on 0 ( pred = 0 , eff = 1) 
- 
-Said so , precision score is the number of __true positive__ divided by the sum of __true positive__ and __false positive__.         
-Recall score on the other hand is the number of __true positive__ divided by the sum of __true positive__ and __false negative__.           
-
-
-As we can see precision is 0.59221, this values means the whenever a POI get flagged in my test set, I am quite confident that is really a poi. Besides a Recall score of 0.4335 means that my identifiers miss sometimes real POIs.
+An higher values of precision score, make me think that when the algorithm flags a poi, it is probable that is actually a poi. On the other hand high value of Recall score, make me suppose that when my algorithm do not flags poi, i' m quite confident that it actually an innocent person.  As we can see precision is 0.59221, this values means the whenever a POI get flagged in my test set, I am quite confident that is really a poi. 
+Besides a Recall score of 0.4335 means that my identifiers miss sometimes real POIs.
 
 __Accuracy__ is the sum of __true positive__ and __true negative__ , divided by the sum of all four of them(the total). 
 

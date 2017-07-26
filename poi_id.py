@@ -6,10 +6,7 @@ import matplotlib.pyplot
 import numpy as np
 
 sys.path.append("../tools/")
-#sys.path.append(
-#        "/Users/massi/Google_Drive/Perso/Data_Science/Udacity/ud120-projects-master/tools/")
-#sys.path.append(
-#        "/Users/massi/Google_Drive/Perso/Data_Science/Udacity/ud120-projects-master/Enron_Email_Dataset_investing/")
+sys.path.append("/Users/massi/Google_Drive/Perso/Data_Science/Udacity/ud120-projects-master/tools/")
 
 from feature_format import featureFormat, targetFeatureSplit
 from tester import dump_classifier_and_data
@@ -32,22 +29,45 @@ features_list = ['poi',
                  'deferred_income',
                  'salary',
                  'from_this_person_to_poi',
-                 'from_poi_to_this_person',
-                 'percent_to_poi',
+                 #'from_poi_to_this_person',
+                 #'percent_to_poi',
                  'percent_from_poi']
                  
                     # You will need to use more features
 
 
 
+
 ### Load the dictionary containing the dataset
-with open(
-        "/Users/massi/Google_Drive/Perso/Data_Science/Udacity/ud120-projects-master/Enron_Email_Dataset_investing/final_project_dataset.pkl", 
-        "r") as data_file:
+with open("final_project_dataset.pkl", "rb") as data_file:
     data_dict = pickle.load(data_file)
 
+#file = open("final_project_dataset.pkl", 'rb')
+#data_dict = pickle.load(file)
+#file.close()
+
 ### Task 2: Remove outliers
-print "the data set is composed of ", len(data_dict), " elemets and I wil use 9 features" 
+
+# In the following lines I  will look deeper into the dataset 
+npoi = 0
+nnpoi = 0
+for k , j in data_dict.items():
+    if j['poi'] == True:
+        npoi +=1 
+    else:
+        nnpoi +=1 
+
+print ("the dataset is composed of", len(data_dict), "person, with" , npoi, "person of interest.")
+
+missing = 0
+for k , j in data_dict.items():
+    for key , values in j.items():
+        if values == "NaN":
+            missing +=1 
+
+print ( "the data det conatins" , missing, " missing values." )
+
+
 
 '''
 In this way I will remove Total that is not a person but the total in the
@@ -55,7 +75,11 @@ dataset of all the employees.
 '''
 #print data_dict['TOTAL']
 data_dict.pop('TOTAL')
+data_dict.pop('THE TRAVEL AGENCY IN THE PARK')
 
+
+
+        
 
 ''' Possibile outliers that are keep in the data set. 
 their value is imporant in training, most of them are poi. I tried without 
@@ -169,9 +193,12 @@ cd matplotlib.pyplot.show()
 
 # Provided to give you a starting point. Try a variety of classifiers.
 
-clf= AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
-                        learning_rate=0.9, n_estimators=100, random_state=None)
+#clf= AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
+ #                       learning_rate=0.9, n_estimators=100, random_state=None)
 
+from xgboost import XGBClassifier
+
+clf = XGBClassifier()
 
 
 '''
@@ -214,6 +241,7 @@ from sklearn.cross_validation import train_test_split
 features_train, features_test, labels_train, labels_test = \
     train_test_split(features, labels, test_size=0.3, random_state=42)
 
+
 '''
 
 Tryed pipelie with MinMaxScaler and selectKbest but result do not improve. 
@@ -226,18 +254,45 @@ min_max_scaler = preprocessing.MinMaxScaler()
 X_train_minmax = min_max_scaler.fit_transform(features_train)
 
 '''
+'''
+
+import matplotlib.pyplot as plt
+from sklearn.cross_validation import StratifiedKFold
+from sklearn.feature_selection import RFECV
+
+rfecv = RFECV(estimator=clf, step=1, cv=StratifiedKFold(labels, 50),
+          scoring='precision')
+rfecv.fit(features, labels)
+print("Optimal number of features : %d" % rfecv.n_features_)
+print rfecv.support_
+#features=features[:,rfecv.support_]
+# Plot number of features VS. cross-validation scores
+plt.figure()
+plt.xlabel("Number of features selected")
+plt.ylabel("Cross validation score (nb of correct classifications)")
+plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
+plt.show()
+
+features[1][0]
+
+
+for i in rfecv.support_:
+    print i 
+
+'''
 
 clf.fit(features_train, labels_train)
 pred = clf.predict(features_test)
 
-from sklearn.model_selection import cross_val_score
-scores = cross_val_score(clf,features_test , labels_test)
-print 'Score Mean: ', scores.mean() 
+#from sklearn.model_selection import cross_val_score
+#scores = cross_val_score(clf,features_test , labels_test)
+#print ('Score Mean: ', scores.mean() )
 
-print 'Accurancy:', clf.score(features_test,labels_test)
+print ('Accurancy:', clf.score(features_test,labels_test))
 
-print 'Precision Score :' , precision_score(labels_test,pred)
-print 'Recall Score :', recall_score(labels_test,pred)
+print( 'Precision Score :' , precision_score(labels_test,pred) )
+print  ('Recall Score :', recall_score(labels_test,pred))
+
 
 
 '''
@@ -263,3 +318,6 @@ for p in importance:
 ### generates the necessary .pkl files for validating your results.
 
 dump_classifier_and_data(clf, my_dataset, features_list)
+
+
+
