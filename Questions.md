@@ -5,10 +5,13 @@
 ####1 
 Summarize for us the goal of this project and how machine learning is useful in trying to accomplish it. As part of your answer, give some background on the dataset and how it can be used to answer the project question. Were there any outliers in the data when you got it, and how did you handle those?  [relevant rubric items: “data exploration”, “outlier investigation”]
 
-This Dataset is composed of different informations of people working at __Enron__ before the bankruptcy. We have multiple data about the salary and other kind of income of the most importants figures of Enron. Also, from the entire email database, we have other informations about the amount of email sent and received for, and to, each person. The dataset is composed of 146 persons, but not all of them were convicted, or supposed involved , in the facts that ruined Enron in less than a month, only 9 are present in this dataset.   
-The goal is to build a POI identifier, with machine learning ,capable of individuate this person of interest (poi), for the data available.  In order to achieve this , and have a great result, we need to analyse correctly this dataset, chose the proper features , and pick and tune the right algorithm. 
-First of all this dataset contains one major outliers, and it was the line Total, the sum of all other line, that I just simply remove. 
-There are other outliers for some data, especially for stock values features, but in order to do not lose to many informations offered form this dataset of only 146 line , I will keep this outliers.   
+This Dataset is composed of different informations of people working at __Enron__ before the bankruptcy. We have multiple data about the salary and other kind of income of the most importants figures of Enron. Also, from the entire email database, we have other informations about the amount of email sent and received for, and to, each person. The dataset is composed of __146__ data point, but not all of them were convicted, or supposed involved in the facts that ruined Enron in less than a month, only __18__ are present in this dataset. This represent the __12.33%__ of the dataset. There are also __1358__ missing values all over the dataset, that will be transformed into 0.
+ 
+The goal is to build a POI identifier, with machine learning ,capable of individuate this person of interest (poi), for the data available.  In order to achieve this , and have a great result, we need to analyse correctly this dataset, choose the proper features , and pick and tune the right algorithm. 
+First of all this dataset contains one major outliers, and it was the line *TOTAL*, the sum of all other line, that I just simply remove. An other datapoint that i will remove because again is not a person is *THE TRAVEL AGENCY IN THE PARK*. 
+This change a little bit the dataset that now contains __144__ datapoint, __18__ POIs, that represent __12.5%__, and __1334__ missing points.   
+
+There are other outliers for some data, especially for stock values features, but in order to do not lose to many informations offered form this dataset of only 144 datapoint , I will keep this outliers.   
 
 
 ----------
@@ -31,12 +34,14 @@ For this project I used theses features :
 
 I use different way to select them. First of all, I look at it in the spreadsheet, secondly I plot them , and them I chose some of them. I eventually modify the selection later when I chose which algorithm use. 
 I tried SelectKbest, in order to obtain a better result, but in the end I kept my choice. I also tried scaling only some features, using minmaxscaler, but I did not find benefit of using it. 
-Eventually I create 2 new features, that are the percent of email received from poi and sent to poi , over all the emails sent and received.  I found using these feature very important in the final choice. 
+
+I decided to create 2 new features, that are the percent of email received from poi and sent to poi , over all the emails sent and received. I thought of these features, because I wanted to create a feature that represented better the quantity of emails send and received over all the emails. 
+
 
 VARAIBLE NAME | IMPORTANCE | Equation 
 ---|---|---
 PERCENT TO POI| __0.7__ | (from this person to poi)/[(from this person to poi)+(from message)]
-PERCENT FROM POI | __0.13__ |  (from poi to this person)/[(from poi to this person)+(from message)]
+PERCENT FROM POI | __0.13__ |  (from poi to this person)/[(from poi to this person)+(to message)]
 
 
 
@@ -92,12 +97,19 @@ Algorithm | Accuracy | Precision Score | Recall Score
 Ada Boost | __0.88467__ | __0.59221__ | __0.43350__ 
         
 
-Precision Score represents the capacity of the algorithm to do not label positive when is actually negative. When i have an higher score, like with this algorithm used, 0.59, I'm quite confident that the flagged one are actually poi and not no-poi. 
+__Precision Score__ represents the capacity of the algorithm to do not label positive when is actually negative. 
+The higher is this score, and more confident we are that the datapoint flagged as positive is really positive, and that the algorithm commits few error when flags someone. 
 
-An higher values of precision score, make me think that when the algorithm flags a poi, it is probable that is actually a poi. On the other hand high value of Recall score, make me suppose that when my algorithm do not flags poi, i' m quite confident that it actually an innocent person.  As we can see precision is 0.59221, this values means the whenever a POI get flagged in my test set, I am quite confident that is really a poi. 
-Besides a Recall score of 0.4335 means that my identifiers miss sometimes real POIs.
+__Recall score__, is the the ability of the classifier to find all the positive samples. The higher is the score and the most probable is that among all the actuals positives datapoint, the algorithm flagged the most correctly. 
 
-__Accuracy__ is the sum of __true positive__ and __true negative__ , divided by the sum of all four of them(the total). 
+In this study, an higher precision score would means that when the algorithm flags a datapoint as POI, I'm quite confident that it is a POI. On the other hand an higher recall score would menas that the algorithm was capable  to labels POI the most of all the actual POIs. 
+
+- If I wanted to be really sure before labelling someone a POI, I would like to have an higher precision score, on the contrary with a lower precision score, I would not be so confident when flagging someone.
+
+- If I wanted to flag the most of the POIs, I would like an higher Recall Score, on the other hand a lower score would means that the algorithm did not catch many POIs. 
+
+
+__Accuracy__ is the sum of __true positive__ and __true negative__ , divided by the sum of all four of them(the total of predictions ). So Accuracy it the percent of all corrected predictions divided by all predictions. 
 
 
 

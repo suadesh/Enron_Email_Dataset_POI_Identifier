@@ -36,6 +36,52 @@ features_list = ['poi',
                     # You will need to use more features
 
 
+features_list = ['poi',
+                 'salary',
+                 #'to_messages',
+                 #'deferral_payments',
+                 #'total_payments',
+                 'deferred_income',
+                 'exercised_stock_options',
+                 #'bonus',
+                 #'restricted_stock',
+                 'expenses',
+                 #'shared_receipt_with_poi',
+                 #'restricted_stock_deferred',
+                 #'total_stock_value',
+                 #'loan_advances',
+                 #'from_messages',
+                 #'other',
+                 'from_this_person_to_poi']
+                 #'director_fees',
+                 #'long_term_incentive',
+                 #'from_poi_to_this_person',
+                 #'percent_to_poi',
+                 #'percent_from_poi']
+
+
+features_list = ['poi',
+                 'salary',
+                 'to_messages',
+                 'deferral_payments',
+                 'total_payments',
+                 'deferred_income',
+                 'exercised_stock_options',
+                 'bonus',
+                 'restricted_stock',
+                 'expenses',
+                 'shared_receipt_with_poi',
+                 'restricted_stock_deferred',
+                 'total_stock_value',
+                 'loan_advances',
+                 'from_messages',
+                 'other',
+                 'from_this_person_to_poi',
+                 'director_fees',
+                 'long_term_incentive',
+                 'from_poi_to_this_person',
+                 'percent_to_poi',
+                 'percent_from_poi']
 
 
 ### Load the dictionary containing the dataset
@@ -49,15 +95,19 @@ with open("final_project_dataset.pkl", "rb") as data_file:
 ### Task 2: Remove outliers
 
 # In the following lines I  will look deeper into the dataset 
-npoi = 0
-nnpoi = 0
+npoi = 0.0
+nnpoi = 0.0
 for k , j in data_dict.items():
     if j['poi'] == True:
         npoi +=1 
     else:
-        nnpoi +=1 
+        nnpoi +=1
 
-print ("the dataset is composed of", len(data_dict), "person, with" , npoi, "person of interest.")
+per = npoi/len(data_dict)*100.00
+
+print "the dataset is composed of", len(data_dict), "person, with" , npoi, "person of interest."
+
+print "The Poi in the dataset are " , per,"%"
 
 missing = 0
 for k , j in data_dict.items():
@@ -65,7 +115,7 @@ for k , j in data_dict.items():
         if values == "NaN":
             missing +=1 
 
-print ( "the data det conatins" , missing, " missing values." )
+print  "the data det conatins" , missing, " missing values." 
 
 
 
@@ -193,12 +243,12 @@ cd matplotlib.pyplot.show()
 
 # Provided to give you a starting point. Try a variety of classifiers.
 
-#clf= AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
- #                       learning_rate=0.9, n_estimators=100, random_state=None)
+clf= AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
+                        learning_rate=0.9, n_estimators=100, random_state=None)
 
-from xgboost import XGBClassifier
+#from xgboost import XGBClassifier
 
-clf = XGBClassifier()
+#clf = XGBClassifier()
 
 
 '''
@@ -242,6 +292,7 @@ features_train, features_test, labels_train, labels_test = \
     train_test_split(features, labels, test_size=0.3, random_state=42)
 
 
+
 '''
 
 Tryed pipelie with MinMaxScaler and selectKbest but result do not improve. 
@@ -254,8 +305,8 @@ min_max_scaler = preprocessing.MinMaxScaler()
 X_train_minmax = min_max_scaler.fit_transform(features_train)
 
 '''
-'''
 
+'''
 import matplotlib.pyplot as plt
 from sklearn.cross_validation import StratifiedKFold
 from sklearn.feature_selection import RFECV
@@ -273,25 +324,22 @@ plt.ylabel("Cross validation score (nb of correct classifications)")
 plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
 plt.show()
 
-features[1][0]
-
-
 for i in rfecv.support_:
     print i 
-
 '''
+
 
 clf.fit(features_train, labels_train)
 pred = clf.predict(features_test)
 
-#from sklearn.model_selection import cross_val_score
-#scores = cross_val_score(clf,features_test , labels_test)
-#print ('Score Mean: ', scores.mean() )
+from sklearn.model_selection import cross_val_score
+scores = cross_val_score(clf,features_test , labels_test)
+print 'Score Mean: ', scores.mean() 
 
-print ('Accurancy:', clf.score(features_test,labels_test))
+print 'Accurancy:', clf.score(features_test,labels_test)
 
-print( 'Precision Score :' , precision_score(labels_test,pred) )
-print  ('Recall Score :', recall_score(labels_test,pred))
+print 'Precision Score :' , precision_score(labels_test,pred) 
+print  'Recall Score :', recall_score(labels_test,pred)
 
 
 
