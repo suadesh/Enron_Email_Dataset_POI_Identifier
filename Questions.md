@@ -7,10 +7,28 @@ Summarize for us the goal of this project and how machine learning is useful in 
 
 This Dataset is composed of different informations of people working at __Enron__ before the bankruptcy. We have multiple data about the salary and other kind of income of the most importants figures of Enron. Also, from the entire email database, we have other informations about the amount of email sent and received for, and to, each person. The dataset is composed of __146__ data point, but not all of them were convicted, or supposed involved in the facts that ruined Enron in less than a month, only __18__ are present in this dataset. This represent the __12.33%__ of the dataset. There are also __1358__ missing values all over the dataset, that will be transformed into 0.
  
+In details the count of each missing features 
+
+Financial Feature | missing |   | Email Features | Missing |  | POI LABEL | Missing
+|---|---|---|----|---|---|---| ---|
+bonus | 63 | | email address |33 | | POI | 0 
+deferral payments  | 106 | |from messages | 58
+deferred income | 96 | |from poi to this person |  58
+director fees | 12 | | from this person to poi |  58
+exercised stock options  | 43 | | to messages | 58
+expenses |50 | | shared receipt with poi | 58
+loan advances | 141
+long term incentive | 79
+other | 53
+restricted stock | 35
+restricted stock_deferred | 127
+salary |50
+total payments | 21
+total stock value  | 19
+ 
 The goal is to build a POI identifier, with machine learning ,capable of individuate this person of interest (poi), for the data available.  In order to achieve this , and have a great result, we need to analyse correctly this dataset, choose the proper features , and pick and tune the right algorithm. 
 First of all this dataset contains one major outliers, and it was the line *TOTAL*, the sum of all other line, that I just simply remove. An other datapoint that i will remove because again is not a person is *THE TRAVEL AGENCY IN THE PARK*. 
-This change a little bit the dataset that now contains __144__ datapoint, __18__ POIs, that represent __12.5%__, and __1334__ missing points.   
-
+ 
 There are other outliers for some data, especially for stock values features, but in order to do not lose to many informations offered form this dataset of only 144 datapoint , I will keep this outliers.   
 
 
@@ -20,22 +38,44 @@ There are other outliers for some data, especially for stock values features, bu
 What features did you end up using in your POI identifier, and what selection process did you use to pick them? Did you have to do any scaling? Why or why not? As part of the assignment, you should attempt to engineer your own feature that does not come ready-made in the dataset -- explain what feature you tried to make, and the rationale behind it. (You do not necessarily have to use it in the final analysis, only engineer and test it.) In your feature selection step, if you used an algorithm like a decision tree, please also give the feature importances of the features that you use, and if you used an automated feature selection function like SelectKBest, please report the feature scores and reasons for your choice of parameter values.  [relevant rubric items: “create new features”, “intelligently select features”, “properly scale features”]
 
 
-For this project I used theses features :
-
-+ exercised stock_options
-+ total stock value
-+ expenses
-+ deferred income
-+ salary
-+ from this person to poi
-+ from poi to this person
-+ percent to poi
-+ percent from poi
-
-I use different way to select them. First of all, I look at it in the spreadsheet, secondly I plot them , and them I chose some of them. I eventually modify the selection later when I chose which algorithm use. 
-I tried SelectKbest, in order to obtain a better result, but in the end I kept my choice. I also tried scaling only some features, using minmaxscaler, but I did not find benefit of using it. 
-
 I decided to create 2 new features, that are the percent of email received from poi and sent to poi , over all the emails sent and received. I thought of these features, because I wanted to create a feature that represented better the quantity of emails send and received over all the emails. 
+
+First of all I did not select the features 'email address', logically is only the email address of each person. 
+
+And after have plotted the features , I decided to start selecting only features that did not contains to many missing values, so I drop all the features with more than 60 missing values. This is the first list : 
+
+- poi
+- exercised stock options
+- expenses
+- from messages
+- from poi to this person
+- from this person to poi
+- other
+- total stock value
+- percent from poi
+- percent to poi
+- restricted stock
+- shared receipt with poi
+- to messages
+- total payments
+- salary
+
+After this I use RFECV , combined with AdaBoost Algorithm , and StratifiedShuffleSplit in order to obtain the best number of features.
+
+![](https://github.com/suadesh/Enron_Email_Dataset_investing/blob/master/Features.png?raw=true)
+
+
+The final choice so were 7 features plus poi 
+
+- poi
+- exercised stock options
+- expenses
+- from this person to poi
+- other
+- restricted stock
+- shared receipt with poi
+- salary
+
 
 
 VARAIBLE NAME | IMPORTANCE | Equation 
@@ -47,7 +87,7 @@ PERCENT FROM POI | __0.13__ |  (from poi to this person)/[(from poi to this pers
 
 ------------
 
-####3
+####3 Final choice of algorithm 
 What algorithm did you end up using? What other one(s) did you try? How did model performance differ between algorithms?  [relevant rubric item: “pick an algorithm”]
 
 I chose to use AdaBoost, that was the one that gave me the better result. I tried also Deciosion Tree, Naive Bayes and  RandomForest. I had a good result with naive Bayes, and low training time but result with AdaBoost were better in the end, and made me chose this one. 
@@ -64,7 +104,7 @@ Random Forest | 0.86373 | 0.46901 | 0.16650 | 0.24576
 
 ---------
 
-####4 
+####4  Tuning the parameters of the algorithm 
 What does it mean to tune the parameters of an algorithm, and what can happen if you don’t do this well?  How did you tune the parameters of your particular algorithm? What parameters did you tune? (Some algorithms do not have parameters that you need to tune -- if this is the case for the one you picked, identify and briefly explain how you would have done it for the model that was not your final choice or a different model that does utilize parameter tuning, e.g. a decision tree classifier).  [relevant rubric items: “discuss parameter tuning”, “tune the algorithm”]
 
 
@@ -86,8 +126,7 @@ I than compare the prediction obtained with the actual values, labels test, usin
 
 ------------
 
-####6
-Give at least 2 evaluation metrics and your average performance for each of them.  Explain an interpretation of your metrics that says something human-understandable about your algorithm’s performance. [relevant rubric item: “usage of evaluation metrics”]
+####6 Metrics and average performance
 
 
 For this project I ended up using AdaBoost Algorithm , and this is the result that I had: 

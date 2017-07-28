@@ -18,10 +18,18 @@ from sklearn.pipeline import Pipeline
 from sklearn.feature_selection import SelectKBest
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import AdaBoostClassifier
-from sklearn.naive_bayes import GaussianNB 
+from sklearn.naive_bayes import GaussianNB
+
+
+################################################################################################
+
+
 ### Task 1: Select what features you'll use.
 ### features_list is a list of strings, each of which is a feature name.
 ### The first feature must be "poi".
+'''
+HAND PICKED FEATURES 
+
 features_list = ['poi',
                  'exercised_stock_options',
                  'total_stock_value',
@@ -33,33 +41,10 @@ features_list = ['poi',
                  #'percent_to_poi',
                  'percent_from_poi']
                  
-                    # You will need to use more features
+'''                 
 
 
-features_list = ['poi',
-                 'salary',
-                 #'to_messages',
-                 #'deferral_payments',
-                 #'total_payments',
-                 'deferred_income',
-                 'exercised_stock_options',
-                 #'bonus',
-                 #'restricted_stock',
-                 'expenses',
-                 #'shared_receipt_with_poi',
-                 #'restricted_stock_deferred',
-                 #'total_stock_value',
-                 #'loan_advances',
-                 #'from_messages',
-                 #'other',
-                 'from_this_person_to_poi']
-                 #'director_fees',
-                 #'long_term_incentive',
-                 #'from_poi_to_this_person',
-                 #'percent_to_poi',
-                 #'percent_from_poi']
-
-
+### COMPLETE FEATURES LIST 
 features_list = ['poi',
                  'salary',
                  'to_messages',
@@ -88,12 +73,7 @@ features_list = ['poi',
 with open("final_project_dataset.pkl", "rb") as data_file:
     data_dict = pickle.load(data_file)
 
-#file = open("final_project_dataset.pkl", 'rb')
-#data_dict = pickle.load(file)
-#file.close()
-
-### Task 2: Remove outliers
-
+## INVESTIGATION OF THE DATA SET AND THE MISSING VALUES 
 # In the following lines I  will look deeper into the dataset 
 npoi = 0.0
 nnpoi = 0.0
@@ -117,19 +97,30 @@ for k , j in data_dict.items():
 
 print  "the data det conatins" , missing, " missing values." 
 
+missingvalues = {}
+for k , v in data_dict['LAY KENNETH L'].items():
+    missingvalues[k]=0
+
+for k , v in data_dict.items():
+    for key , value in v.items() : 
+        if value =='NaN':
+            missingvalues[key] +=1 
+            
+
+print "Detailed Missing Values" 
+print missingvalues
 
 
-'''
-In this way I will remove Total that is not a person but the total in the
-dataset of all the employees. 
-'''
-#print data_dict['TOTAL']
+##########################################################################################
+
+### Task 2: Remove outliers
+
+### REMOVE OUTLIERS 
+
+###There are 2 data point that are not person at all, so I will remove it from the dataset 
+
 data_dict.pop('TOTAL')
 data_dict.pop('THE TRAVEL AGENCY IN THE PARK')
-
-
-
-        
 
 ''' Possibile outliers that are keep in the data set. 
 their value is imporant in training, most of them are poi. I tried without 
@@ -138,19 +129,12 @@ data_dict.pop('LAY KENNETH L')
 data_dict.pop('HIRKO JOSEPH')
 data_dict.pop('SKILLING JEFFREY K')
 data_dict.pop('PAI LOU L')
-
 '''
 
+### Task 3: Create new feature(s)
+### Store to my_dataset for easy export below.
 
-''' Features Available to investigate 
-'salary','to_messages','deferral_payments','total_payments','deferred_income',
-'exercised_stock_options','bonus','restricted_stock','expenses',
-'shared_receipt_with_poi', 'restricted_stock_deferred','total_stock_value',
-'loan_advances','from_messages','other','from_this_person_to_poi',
-'director_fees','long_term_incentive','from_poi_to_this_person'
-
-'''
-
+### CREATE FEATURES 
 '''
 This procedure will create 2 new variables, that are in a sort of way the 
 percentage of the email received and sent to poi over the total emails. 
@@ -178,41 +162,70 @@ for key, values in data_dict.items():
     values['percent_from_poi']= percent_from_poi
 
 
-### Task 3: Create new feature(s)
-### Store to my_dataset for easy export below.
 my_dataset = data_dict
+
+
+########################################################################################
+'''
+THIS PROCEDURE HAS BEEN USED TO CHOSE THE BEST FEATURES TO USE, 
+THE RESULT IS THE LIST ABOVE 
+
+import matplotlib.pyplot as plt
+from sklearn.cross_validation import StratifiedKFold
+from sklearn.feature_selection import RFECV
+from sklearn.model_selection import StratifiedShuffleSplit
+from sklearn.ensemble import AdaBoostClassifier
+
+clf= AdaBoostClassifier(learning_rate = 0.5,n_estimators=50)
+rfecv = RFECV(estimator=clf, step=1, cv=StratifiedShuffleSplit(n_splits=20, test_size=0.25, random_state=0),
+          scoring='precision')
+rfecv.fit(features, labels)
+print("Optimal number of features : %d" % rfecv.n_features_)
+print rfecv.support_
+#features=features[:,rfecv.support_]
+# Plot number of features VS. cross-validation scores
+plt.figure()
+plt.xlabel("Number of features selected")
+plt.ylabel("Cross validation score (nb of correct classifications)")
+plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
+plt.show()
+'''
+########################################################################################
+
+
+### FEATURES SELECTED WILL BE ONLY THE FEATURES THAT HAVE LESS THAN 60 MISSING VALUES 
+### AND THAN USING RFECV TO CHOSE THE BEST ONES 
+
+features_list = ['poi',
+                 'exercised_stock_options',
+                 'expenses',
+                 #'from_messages',
+                 #'from_poi_to_this_person',
+                 'from_this_person_to_poi',
+                 #'other',
+                 'percent_from_poi',
+                 #'percent_to_poi',
+                 'restricted_stock',
+                 'salary',
+                 #'shared_receipt_with_poi',
+                 #'to_messages',
+                 #'total_payments',
+                 'total_stock_value']
+
+
+
 
 ### Extract features and labels from dataset for local testing
 data = featureFormat(my_dataset, features_list, sort_keys = True)
-
-'''
-With this procedure I tested the scaling of only fews features, but the
- result obtained was worst than before 
- ( kept as remainder for further investigation )
-
-b = data[:,4]
-min_max_scaler = preprocessing.MinMaxScaler()
-X_train_minmax = min_max_scaler.fit_transform(b)
-
-f = 4
-#g = 0      
-#for f in range(1,3):
-j = 0 
-for j in range(0,144):
-    data[j][f] = X_train_minmax[j]
-    j+=1
- #f +=1 
-  #  g +=1 
-
-'''
 labels, features = targetFeatureSplit(data)
 
-      
-'''
 
+
+#############################################################################    
+
+'''
 This is the last procedure used to plot with matplotlib the data" 
 i = 1 
-
 for i in range(9):
     for point in data:
         AA = point[0]
@@ -232,8 +245,9 @@ for point in data:
 matplotlib.pyplot.xlabel("salary")
 matplotlib.pyplot.ylabel("exercised_stock_options")
 cd matplotlib.pyplot.show()
-
 ''' 
+
+#############################################################################
 
 ### Task 4: Try a varity of classifiers
 ### Please name your classifier clf for easy export below.
@@ -243,18 +257,45 @@ cd matplotlib.pyplot.show()
 
 # Provided to give you a starting point. Try a variety of classifiers.
 
-clf= AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
-                        learning_rate=0.9, n_estimators=100, random_state=None)
+########################################################################
+''''
 
-#from xgboost import XGBClassifier
+THIS PROCEDURE HAS BEEN USED TO CHOSE THE PROPER PARAMENTERS FOR THE ADABOOST ALGORTIMH
+IT HAS BEEN USE GRIDSEARCH AND StratifiedShuffleSplit 
 
-#clf = XGBClassifier()
+from sklearn.model_selection import StratifiedShuffleSplit
+from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import AdaBoostClassifier
 
+ada = AdaBoostClassifier()
+cv = StratifiedShuffleSplit(n_splits=15, test_size=0.20, random_state=42)
+parameters = {'learning_rate':[0.5,0.7,0.8,0.9,1.0,1.1,1.2], 
+                 'n_estimators':[50,75,100,150,200],
+                 'algorithm' : ['SAMME.R','SAMME']}
+clf = GridSearchCV(ada, parameters , cv=cv)
+
+clf.fit(features, labels)
+
+print("The best parameters are %s with a score of %0.2f"
+      % (clf.best_params_, clf.best_score_))
 
 '''
+
+########################################################################
+
+clf= AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
+                        learning_rate=0.7, n_estimators=50, random_state=None)
+
+
+
+########################################################################
+'''
+
+OTHERS ALGORITMH TESTED 
+
+
 much faster than Adaboost but result are slightly worst
 clf = GaussianNB() 
-
 
 USED TO FIND THE CORRECT PARAMENTERS FOR ADABOOST 
 parameters = {'learning_rate':[0.5,0.7,0.8,0.9,1.0,1.1,1.2], 
@@ -263,8 +304,6 @@ clf = GridSearchCV(adr, parameters)
 clf=AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
                       learning_rate=1.0, n_estimators=75, random_state=None)
 
-OTHER CLASSIFIER TESTED, RESULT WERE NOT AS GOOD, PROBABLY TO BE TUNED BETTER 
-BUT IN THE END THE CHOISE HAS GONE TO ADABOOST 
 
 from sklearn import tree
 clf = tree.DecisionTreeClassifier(criterion ='gini',splitter='best')
@@ -275,7 +314,7 @@ from sklearn.ensemble import RandomForestClassifier
 clf = RandomForestClassifier(n_estimators=10)
 
 '''
-
+########################################################################
 
 
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
@@ -292,73 +331,19 @@ features_train, features_test, labels_train, labels_test = \
     train_test_split(features, labels, test_size=0.3, random_state=42)
 
 
-
 '''
-
 Tryed pipelie with MinMaxScaler and selectKbest but result do not improve. 
 scaler = preprocessing.MinMaxScaler()
 skb = SelectKBest(k=8).fit_transform(features_train, labels_train)
 clf =  Pipeline(steps=[("SKB", skb),("Adaboost", ada)])
-
-
 min_max_scaler = preprocessing.MinMaxScaler()
 X_train_minmax = min_max_scaler.fit_transform(features_train)
 
 '''
 
-'''
-import matplotlib.pyplot as plt
-from sklearn.cross_validation import StratifiedKFold
-from sklearn.feature_selection import RFECV
-
-rfecv = RFECV(estimator=clf, step=1, cv=StratifiedKFold(labels, 50),
-          scoring='precision')
-rfecv.fit(features, labels)
-print("Optimal number of features : %d" % rfecv.n_features_)
-print rfecv.support_
-#features=features[:,rfecv.support_]
-# Plot number of features VS. cross-validation scores
-plt.figure()
-plt.xlabel("Number of features selected")
-plt.ylabel("Cross validation score (nb of correct classifications)")
-plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
-plt.show()
-
-for i in rfecv.support_:
-    print i 
-'''
-
-
 clf.fit(features_train, labels_train)
 pred = clf.predict(features_test)
 
-from sklearn.model_selection import cross_val_score
-scores = cross_val_score(clf,features_test , labels_test)
-print 'Score Mean: ', scores.mean() 
-
-print 'Accurancy:', clf.score(features_test,labels_test)
-
-print 'Precision Score :' , precision_score(labels_test,pred) 
-print  'Recall Score :', recall_score(labels_test,pred)
-
-
-
-'''
-using the attribute to see the feature importance. 
-
-
-importance =  clf.feature_importances_
-
-i = 1 
-for p in importance:
-    print features_list[i] , "importance : " ,  p 
-    i +=1 
-
-'''
-#clf.best_estimator_
-
-#rsult = clf.cv_results_
-#print "features importance :" , clf.feature_importances_
 
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
@@ -366,6 +351,10 @@ for p in importance:
 ### generates the necessary .pkl files for validating your results.
 
 dump_classifier_and_data(clf, my_dataset, features_list)
+
+from tester import test_classifier
+print "Tester Classification report"
+print test_classifier(clf, my_dataset, features_list)
 
 
 
