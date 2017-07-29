@@ -16,7 +16,7 @@ In 2000, Enron was one of the largest companies in the United States. By 2002, i
 
 ## Features 
 
-###Financial features 
+### Financial features 
 
 - bonus 
 - deferral payments  
@@ -35,7 +35,7 @@ In 2000, Enron was one of the largest companies in the United States. By 2002, i
 
 (all units are in US dollars)
 
-###Email features
+### Email features
 
 - email address
 - from messages 
@@ -46,7 +46,7 @@ In 2000, Enron was one of the largest companies in the United States. By 2002, i
 
 (units are generally number of emails messages; notable exception is ‘email_address’, which is a text string)
 
-POI label
+### POI label
 
 - poi 
 
