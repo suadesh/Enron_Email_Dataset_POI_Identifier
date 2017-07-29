@@ -21,7 +21,7 @@ S'SAMME.R'
 p10
 sS'learning_rate'
 p11
-F0.7
+F0.9
 sS'n_estimators'
 p12
 I100
