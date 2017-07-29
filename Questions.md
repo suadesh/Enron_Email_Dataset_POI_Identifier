@@ -5,7 +5,7 @@
 
 
 
-###1 ENRONN DATASET 
+## 1 ENRONN DATASET 
 
 This Dataset is composed of different informations of people working at __Enron__ before the bankruptcy. We have multiple data about the salary and other kind of income of the most importants figures of Enron. Also, from the entire email database, we have other informations about the amount of email sent and received for, and to, each person. The dataset is composed of __146__ data point, but not all of them were convicted, or supposed involved in the facts that ruined Enron in less than a month, only __18__ are present in this dataset. This represent the __12.33%__ of the dataset. There are also __1358__ missing values all over the dataset, that will be transformed into 0.
  
@@ -36,7 +36,7 @@ There are other outliers for some data, especially for stock values features, bu
 
 ----------
 
-###2 Features Creation and Selection 
+## 2 Features Creation and Selection 
 
 
 I decided to create 2 new features, that are the percent of email received from poi and sent to poi , over all the emails sent and received. I thought of these features, because I wanted to create a feature that represented better the quantity of emails send and received over all the emails.              
@@ -44,7 +44,7 @@ The first one is __percent to poi__ and is *from this person to poi* divided by 
 The second features is __percent from poi__ and is *from poi to this person* divided by the sum of *from poi to this person* and *to messages*. 
 Here the initial scores with select K best of all the available features.
 
-##### Select K best score initial available features 
+### Select K best score initial available features 
 
 Financial Feature | missing |   | Email Features | Missing |
 |---|---|---|----|---|---|---| ---|
@@ -101,7 +101,7 @@ The final choice so were 7 features plus poi ( on the right the features importa
 
 ------------
 
-###3 Final choice of algorithm 
+## 3 Final choice of algorithm 
 
 I chose to use AdaBoost, that was the one that gave me the better result. I tried also Decision Tree, Naive Bayes and  RandomForest. For Naive Bayes and Random forest I had good score for precision but on the other hand a low recall score. Decision tree was both more close scores in precision and recall, but lower from my final choice.  
 
@@ -117,7 +117,7 @@ Random Forest | 0.85093 | 0.43106 | 0.13600 | 0.20677
 
 ---------
 
-###4  Tuning the parameters of the algorithm 
+## 4  Tuning the parameters of the algorithm 
 
 The most of the algorithm used in machine learning have specific parameters , that can help to adapt to the specific case. If the parameters are not well chosen,  there are two risks: to do not fit very well the data , or to fit too much. In the first case the result will be not very accurate, compromising the result. In the second case the risk is to fit so well the dataset and draw a decision boundary too specific to the data, useless with other dataset. 
 To start I used the default parameters, than I modify some parameters.  
@@ -128,7 +128,7 @@ I finally used GridSearchCV to look for the best one through a matrix of choices
 
 ----------
 
-###5 Validation
+## 5 Validation
 
 
 Validate our algorithm we need to evaluate the metrics of the performance, like accuracy , recall and precision score.        
@@ -143,7 +143,7 @@ To validate my choices, i import the test_classifier for the tester.py file, tha
 
 ------------
 
-###6 Metrics and performance
+## 6 Metrics and performance
 
 
 For this project I ended up using AdaBoost Algorithm , and this is the result that I had: 
