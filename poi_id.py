@@ -151,7 +151,8 @@ my_dataset = data_dict
 
 ########################################################################################
 '''
-THIS PROCEDURE HAS BEEN USED TO CHOSE THE BEST FEATURES TO USE, AMONG THE FEATURES THAT HAS LESS THAN 60 MISSING POINTS  
+THIS PROCEDURE HAS BEEN USED TO CHOSE THE BEST FEATURES TO USE, AMONG THE FEATURES 
+THAT HAS LESS THAN 60 MISSING POINTS  
 THE RESULT IS THE LIST ABOVE 
 
 import matplotlib.pyplot as plt
@@ -176,23 +177,16 @@ plt.show()
 ########################################################################################
 
 
-### FEATURES SELECTED WILL BE ONLY THE FEATURES THAT HAVE LESS THAN 60 MISSING VALUES AND THAN USING RFECV TO CHOSE THE BEST ONES 
+### FEATURES SELECTED WILL BE ONLY THE FEATURES THAT HAVE LESS THAN 60 MISSING VALUES 
+### AND THAN USING RFECV TO CHOSE THE BEST ONES 
 
 features_list = ['poi',
                  'exercised_stock_options',
                  'expenses',
                  'from_messages',
-                 #'from_poi_to_this_person',
                  'from_this_person_to_poi',
                  'other',
-                 #'percent_from_poi',
-                 #'percent_to_poi',
-                 #'restricted_stock',
-                 #'salary',
                  'shared_receipt_with_poi']
-                 #'to_messages',
-                 #'total_payments',
-                 #'total_stock_value']
 
 
 

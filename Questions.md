@@ -7,9 +7,15 @@
 
 ## 1 ENRONN DATASET 
 
-This Dataset is composed of different informations of people working at __Enron__ before the bankruptcy. We have multiple data about the salary and other kind of income of the most importants figures of Enron. Also, from the entire email database, we have other informations about the amount of email sent and received for, and to, each person. The dataset is composed of __146__ data point, but not all of them were convicted, or supposed involved in the facts that ruined Enron in less than a month, only __18__ are present in this dataset. This represent the __12.33%__ of the dataset. There are also __1358__ missing values all over the dataset, that will be transformed into 0.
- 
-In details the count of each missing features 
+This Dataset is composed of different informations of people working at __Enron__ before the bankruptcy. We have multiple data about the salary and other kind of income of the most importants figures of Enron. Also, from the entire email database, we have other informations about the amount of email sent and received for, and to, each person. The dataset is composed of __146__ data point, but not all of them were convicted, or supposed involved in the facts that ruined Enron in less than a month. There are only __18__ person of interest and 128 Not Person of interest present in this dataset,  This represent the __12.33%__ of POI in the dataset.
+
+
+
+![](https://github.com/suadesh/Enron_Email_Dataset_POI_Identifier/blob/master/POI.png?raw=true)
+
+
+There are also __1358__ missing values all over the dataset, that will be transformed into 0.
+In details the count of each missing features, as we can see 20 out of 21 features have a missing values, the only features that have no missing values is POI.  
 
 Financial Feature | missing |   | Email Features | Missing |  | POI LABEL | Missing
 |---|---|---|----|---|---|---| ---|
@@ -99,7 +105,20 @@ The final choice so were 7 features plus poi ( on the right the features importa
 - shared receipt with poi - 0.13
 
 
-------------
+### Impact on the final scores with and without the new features created 
+
+Features | Accuracy | Precision | Recall | F1 
+---|---|---|---|---
+Final Selection without the new created features  | 0.87550 | 0.59081 | 0.41800 | 0.48960 
+Final Selection with percent from poi | 0.87313 | 0.53492 | 0.37150 | 0.43848
+Final Selection with percent to poi| 0.88120 | 0.57476 | 0.41900 | 0.48467
+Final Selection with both the new created features| 0.87140 | 0.52464 | 0.37800 | 0.43941 
+
+As we can see the accuracy reach a better accuracy and recall score using also *percent to poi*, but it cannot be said for precision. 
+
+
+--------
+
 
 ## 3 Final choice of algorithm 
 
